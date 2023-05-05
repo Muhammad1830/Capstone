@@ -1,90 +1,62 @@
 package org.yearup;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-
-public class Transaction
-{
-    private LocalDateTime dateTime;
+public class Transaction {
+    private String date;
+    private String time;
     private String description;
     private String vendor;
     private double amount;
 
-    public Transaction(LocalDateTime dateTime, String description, String vendor, double amount)
-    {
-        this.dateTime = dateTime;
+    public Transaction(String date, String time, String description, String vendor, double amount) {
+        this.date = date;
+        this.time = time;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
     }
 
-    public LocalDateTime getDateTime()
-    {
-        return dateTime;
+    public String getDate() {
+        return date;
     }
 
-    public void setDateTime(LocalDateTime dateTime)
-    {
-        this.dateTime = dateTime;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getDescription()
-    {
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getVendor()
-    {
+    public String getVendor() {
         return vendor;
     }
 
-    public void setVendor(String vendor)
-    {
+    public void setVendor(String vendor) {
         this.vendor = vendor;
     }
 
-    public double getAmount()
-    {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount)
-    {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
-    public String toCSV()
-    {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return String.format("%s|%s|%s|%.2f", dateTime.format(formatter), description, vendor, amount);
+    @Override
+    public String toString() {
+        return String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor, amount);
     }
-
-    public static Transaction fromCSV(String csvLine)
-    {
-        String[] parts = csvLine.split("\\|");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(parts[0], formatter);
-        String description = parts[1];
-        String vendor = parts[2];
-
-        double amount = Double.parseDouble(parts[3]);
-
-        return new Transaction(dateTime, description, vendor, amount);
-    }
-
-
-    public String toString()
-
-    {
-        return dateTime.toLocalDate() + "|" + dateTime.toLocalTime() + "|"
-                + description + "|" + vendor + "|" + amount;
-    }
-
-
 }
