@@ -1,8 +1,11 @@
 package org.yearup;
 
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Main
+
 {
     private LedgerApp ledger;
     private TransactionManager transactionManager;
@@ -24,10 +27,11 @@ public class Main
         while (running)
         {
             System.out.println("\nHome Screen:");
+            System.out.println("A) All Transactions");
             System.out.println("D) Add Deposit");
             System.out.println("P) Make Payment (Debit)");
-            System.out.println("L) Ledger");
-            System.out.println("C) Clear All Transactions");
+            System.out.println("C) Clear Transactions by DateTime");
+            System.out.println("CA) Clear All Transactions");
             System.out.println("R) Reports");
             System.out.println("X) Exit");
 
@@ -36,20 +40,23 @@ public class Main
 
             switch (choice)
             {
+                case "A":
+                    ledger.displayTransactions(transactionManager.getAllTransactions());
+                    break;
                 case "D":
                     addDeposit();
                     break;
                 case "P":
                     makePayment();
                     break;
-                case "L":
-                    ledger.displayAll();
+                case "C":
+                    clearTransactionsByDateTime();
+                    break;
+                case "CA":
+                    clearAllTransactions();
                     break;
                 case "R":
                     ledger.displayReports();
-                    break;
-                case "C":
-                    clearAllTransactions();
                     break;
                 case "X":
                     running = false;
@@ -108,9 +115,23 @@ public class Main
         transactionManager.addTransaction(payment);
     }
 
-    public void clearAllTransactions()
+    private void clearTransactionsByDateTime()
     {
-        transactionManager.clearTransactions();
+        System.out.print("Enter start date and time (yyyy-MM-dd HH:mm:ss): ");
+        String startDateTimeStr = scanner.nextLine().trim();
+        LocalDateTime startDateTime = LocalDateTime.parse(startDateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        System.out.print("Enter end date and time (yyyy-MM-dd HH:mm:ss): ");
+        String endDateTimeStr = scanner.nextLine().trim();
+        LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        transactionManager.clearTransactionsByDateTime(startDateTime, endDateTime);
+        System.out.println("Transactions cleared between " + startDateTimeStr + " and " + endDateTimeStr);
+    }
+
+    private void clearAllTransactions()
+    {
+        transactionManager.clearAllTransactions();
         System.out.println("All transactions have been cleared.");
     }
 

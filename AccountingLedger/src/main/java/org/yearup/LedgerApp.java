@@ -15,26 +15,20 @@ public class LedgerApp
         this.scanner = new Scanner(System.in);
     }
 
-    public void displayDeposits()
+    public void displayTransactions(List<Transaction> transactions)
     {
-        List<Transaction> deposits = transactionManager.getDeposits();
-        displayTransactions(deposits);
-    }
-
-    public void displayPayments()
-    {
-        List<Transaction> payments = transactionManager.getPayments();
-        displayTransactions(payments);
-    }
-
-    private void displayTransactions(List<Transaction> transactions)
-    {
-        System.out.println("Date       |Time    |Description          |Vendor           |Amount ");
-        System.out.println("-----------------------------------------------------------------------------");
-        for (Transaction transaction : transactions)
+        if (transactions.isEmpty())
         {
-            System.out.println(transaction);
+            System.out.println("No transactions found.");
         }
+        else
+        {
+            for (Transaction transaction : transactions)
+            {
+                System.out.println(transaction);
+            }
+        }
+
     }
 
     private void displayMonthToDate()
@@ -111,44 +105,6 @@ public class LedgerApp
         }
     }
 
-    public void displayAll()
-    {
-        boolean running = true;
 
-        while (running)
-        {
-            System.out.println("\nLedger Menu:");
-            System.out.println("A) All");
-            System.out.println("D) Deposits");
-            System.out.println("P) Payments");
-            System.out.println("R) Reports");
-            System.out.println("H) Home");
 
-            System.out.print("Enter your choice: ");
-            String choice = scanner.nextLine().trim().toUpperCase();
-
-            switch (choice)
-            {
-                case "A":
-                    displayTransactions(transactionManager.getAllTransactions());
-                    break;
-                case "D":
-                    displayDeposits();
-                    break;
-                case "P":
-                    displayPayments();
-                    break;
-                case "R":
-                    displayReports();
-                    break;
-                case "H":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
-
-    
 }

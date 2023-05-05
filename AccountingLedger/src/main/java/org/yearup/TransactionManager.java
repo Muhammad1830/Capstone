@@ -1,6 +1,7 @@
 package org.yearup;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 import java.util.List;
@@ -9,19 +10,11 @@ import java.util.ArrayList;
 
 public class TransactionManager
 {
+    private static final String FILENAME = "transactions.csv";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
     private String fileName = "transactions.csv";
 
-    public void clearTransactions()
-    {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false)))
-        {
-            writer.write(""); // Write an empty string to the file to clear its contents
-        }
-        catch (IOException e)
-        {
-            System.err.println("Error clearing transactions from the file: " + e.getMessage());
-        }
-    }
 
     public void addTransaction(Transaction transaction)
     {
@@ -30,6 +23,7 @@ public class TransactionManager
             writer.write(transaction.toString());
             writer.newLine();
         }
+
         catch (IOException e)
         {
             System.err.println("Error writing to the file: " + e.getMessage());
@@ -43,6 +37,7 @@ public class TransactionManager
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))
         {
             String line;
+
             while ((line = reader.readLine()) != null)
             {
                 String[] parts = line.split("\\|");
@@ -50,6 +45,7 @@ public class TransactionManager
                 transactions.add(transaction);
             }
         }
+
         catch (IOException e)
         {
             System.err.println("Error reading from the file: " + e.getMessage());
@@ -58,19 +54,52 @@ public class TransactionManager
         return transactions;
     }
 
-    public List<Transaction> getDeposits()
+    public void clearAllTransactions()
     {
-        return getAllTransactions().stream()
-                .filter(t -> t.getAmount() > 0)
-                .collect(Collectors.toList());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME)))
+        {
+
+        }
+
+        catch (IOException e) {
+            System.out.println("Error while clearing the transactions file: " + e.getMessage());
+        }
     }
 
-    public List<Transaction> getPayments()
+    public void clearTransactionsByDateTime(LocalDateTime start, LocalDateTime end)
     {
-        return getAllTransactions().stream()
-                .filter(t -> t.getAmount() < 0)
-                .collect(Collectors.toList());
+        List<Transaction> transactions = getAllTransactions();
+        List<Transaction> filteredTransactions = new ArrayList<>();
+
+        for (Transaction transaction : transactions)
+        {
+            LocalDateTime transactionDateTime = LocalDateTime.parse(
+                    transaction.getDate() + "T" + transaction.getTime(),
+                    DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            );
+
+            if (transactionDateTime.isBefore(start) || transactionDateTime.isAfter(end))
+            {
+                filteredTransactions.add(transaction);
+            }
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME)))
+        {
+            for (Transaction transaction : filteredTransactions)
+            {
+                writer.write(transaction.toString());
+                writer.newLine();
+            }
+        }
+
+        catch (IOException e)
+        {
+            System.out.println("Error while writing to the file: " + e.getMessage());
+        }
     }
+
+
 
     public List<Transaction> getTransactionsByVendor(String vendor)
     {
