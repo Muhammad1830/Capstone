@@ -8,27 +8,34 @@ public class Main
     private TransactionManager transactionManager;
     private Scanner scanner;
 
-    public Main() {
+    public Main()
+    {
         this.transactionManager = new TransactionManager();
         this.ledger = new LedgerApp(transactionManager);
         this.scanner = new Scanner(System.in);
     }
 
-    public void run() {
+
+    public void run()
+
+    {
         boolean running = true;
 
-        while (running) {
+        while (running)
+        {
             System.out.println("\nHome Screen:");
             System.out.println("D) Add Deposit");
             System.out.println("P) Make Payment (Debit)");
             System.out.println("L) Ledger");
             System.out.println("C) Clear All Transactions");
+            System.out.println("R) Reports");
             System.out.println("X) Exit");
 
             System.out.print("Enter your choice: ");
             String choice = scanner.nextLine().trim().toUpperCase();
 
-            switch (choice) {
+            switch (choice)
+            {
                 case "D":
                     addDeposit();
                     break;
@@ -37,6 +44,9 @@ public class Main
                     break;
                 case "L":
                     ledger.displayAll();
+                    break;
+                case "R":
+                    ledger.displayReports();
                     break;
                 case "C":
                     clearAllTransactions();
@@ -50,7 +60,10 @@ public class Main
         }
     }
 
-    public void addDeposit() {
+
+    public void addDeposit()
+
+    {
         System.out.print("Enter the date (YYYY-MM-DD): ");
         String date = scanner.nextLine().trim();
 
@@ -65,13 +78,16 @@ public class Main
 
         System.out.print("Enter the amount: ");
         double amount = scanner.nextDouble();
-        scanner.nextLine(); // Consume the newline character left by nextDouble()
+        scanner.nextLine();
 
         Transaction deposit = new Transaction(date, time, description, vendor, amount);
         transactionManager.addTransaction(deposit);
     }
 
-    public void makePayment() {
+
+    public void makePayment()
+
+    {
         System.out.print("Enter the date (YYYY-MM-DD): ");
         String date = scanner.nextLine().trim();
 
@@ -85,20 +101,25 @@ public class Main
         String vendor = scanner.nextLine().trim();
 
         System.out.print("Enter the amount: ");
-        double amount = scanner.nextDouble() * -1; // Convert the amount to a negative value
-        scanner.nextLine(); // Consume the newline character left by nextDouble()
+        double amount = scanner.nextDouble() * -1;
+        scanner.nextLine();
 
         Transaction payment = new Transaction(date, time, description, vendor, amount);
         transactionManager.addTransaction(payment);
     }
 
-    public void clearAllTransactions() {
+    public void clearAllTransactions()
+    {
         transactionManager.clearTransactions();
         System.out.println("All transactions have been cleared.");
     }
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args)
+    {
         Main app = new Main();
         app.run();
     }
+
+
 }
